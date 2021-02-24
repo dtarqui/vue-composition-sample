@@ -3,29 +3,36 @@
     <user-list :users="activeUsers" @list-projects="selectUser"></user-list>
     <projects-list :user="selectedUser"></projects-list>
   </main>
+  <hr />
+  <h2 align="center">Samples</h2>
+  <samples></samples>
 </template>
 
 <script>
 import USER_DATA from "./dummy-data.js";
-
 import UserList from "./components/users/UserList.vue";
 import ProjectsList from "./components/projects/ProjectsList.vue";
-
+import Samples from "./components/Samples";
+import { ref } from "vue";
 export default {
   components: {
     UserList,
     ProjectsList,
+    Samples,
   },
-  data() {
+  setup() {
+    const selectedUser = ref(null);
+    const activeUsers = USER_DATA;
+
+    function selectUser(uid) {
+      selectedUser.value = activeUsers.value.find((usr) => usr.id === uid);
+    }
+
     return {
-      selectedUser: null,
-      activeUsers: USER_DATA,
+      selectedUser,
+      activeUsers,
+      selectUser,
     };
-  },
-  methods: {
-    selectUser(uid) {
-      this.selectedUser = this.activeUsers.find((usr) => usr.id === uid);
-    },
   },
 };
 </script>
