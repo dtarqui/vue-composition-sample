@@ -13,6 +13,7 @@
 export default {
   props: ["searchTerm"],
   emits: ["search"],
+  setup() {},
   methods: {
     search(event) {
       this.$emit("search", event.target.value);

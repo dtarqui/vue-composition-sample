@@ -35,7 +35,8 @@ export default [{
   {
     id: 'julie',
     fullName: 'Julie Jones',
-    projects: [{
+    projects: [
+      {
         id: 'julie_p1',
         title: 'Create agenda for next months'
       },
