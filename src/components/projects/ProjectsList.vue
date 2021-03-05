@@ -21,8 +21,10 @@
 </template>
 
 <script>
-import { computed, ref, toRefs, watch } from "vue";
+import { computed, watch, toRefs } from "vue";
+
 import ProjectItem from "./ProjectItem.vue";
+import useSearch from "../../hooks/search.js";
 
 export default {
   components: {
@@ -30,50 +32,68 @@ export default {
   },
   props: ["user"],
   setup(props) {
-    const enteredSearchTerm = ref("");
-    const activeSearchTerm = ref("");
+    const { user } = toRefs(props);
 
-    const availableProjects = computed(function () {
-      if (activeSearchTerm.value) {
-        return props.user.projects.filter((prj) =>
-          prj.title.includes(activeSearchTerm.value)
-        );
-      }
-      return props.user.projects;
+    const projects = computed(function () {
+      return user.value ? user.value.projects : [];
     });
+
+    const { enteredSearchTerm, availableItems, updateSearch } = useSearch(
+      projects,
+      "title"
+    );
 
     const hasProjects = computed(function () {
-      return props.user.projects && availableProjects.value.length > 0;
+      return user.value.projects && availableItems.value.length > 0;
     });
 
-    function updateSearch(val) {
-      enteredSearchTerm.value = val;
-    }
-
-    watch(enteredSearchTerm, function (newValue) {
-      setTimeout(() => {
-        if (newValue === enteredSearchTerm.value) {
-          activeSearchTerm.value = newValue;
-        }
-      }, 300);
-    });
-    // const propsWithRefs = toRefs(props);
-    // const user = propsWithRefs.user;
-
-    const { user } = toRefs(props);
-   
-   watch(user, function () {
-      enteredSearchTerm.value = "";
+    watch(user, function () {
+      updateSearch("");
     });
 
     return {
       enteredSearchTerm,
-      activeSearchTerm,
-      availableProjects,
+      availableProjects: availableItems,
       hasProjects,
       updateSearch,
     };
   },
+  // data() {
+  //   return {
+  //     enteredSearchTerm: '',
+  //     activeSearchTerm: '',
+  //   };
+  // },
+  // computed: {
+  //   hasProjects() {
+  //     return this.user.projects && this.availableProjects.length > 0;
+  //   },
+  //   availableProjects() {
+  //     if (this.activeSearchTerm) {
+  //       return this.user.projects.filter((prj) =>
+  //         prj.title.includes(this.activeSearchTerm)
+  //       );
+  //     }
+  //     return this.user.projects;
+  //   },
+  // },
+  // methods: {
+  //   updateSearch(val) {
+  //     this.enteredSearchTerm = val;
+  //   },
+  // },
+  // watch: {
+  //   enteredSearchTerm(val) {
+  //     setTimeout(() => {
+  //       if (val === this.enteredSearchTerm) {
+  //         this.activeSearchTerm = val;
+  //       }
+  //     }, 300);
+  //   },
+  //   user() {
+  //     this.enteredSearchTerm = '';
+  //   },
+  // },
 };
 </script>
 
