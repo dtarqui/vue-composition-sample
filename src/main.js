@@ -25,7 +25,8 @@ const router = createRouter({
         },
         {
             path: '/products/:pid',
-            component: ProductDetails
+            component: ProductDetails,
+            props: true
         },
         {
             path: '/products/add',
